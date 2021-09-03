@@ -168,5 +168,24 @@ public class Validator {
 //		System.out.println(email);
 	}
 	
-	
+	public static LocalDate validLocalDate(String sc) {
+        String date;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        boolean isLoop = true;
+        LocalDate checkDate = null;
+        do {
+            System.out.println("Input Date: ");
+            date= sc.trim();
+            isLoop = true;
+            try {
+                checkDate = LocalDate.parse(date, formatter);
+                return checkDate;   
+            } catch (Exception e) {
+                System.out.println("Date Is Not Valid!!!");
+                isLoop = true;
+            }
+           
+        } while (isLoop);
+        return checkDate;
+    }
 }
