@@ -14,7 +14,7 @@ public class JDBC {
 		
 		try {
 			Class.forName(JDBC);
-			String ConnectionURL = "jdbc:sqlserver://DESKTOP-D01NKHU:1433;databaseName=QuanLyKhachSan;integratedSecurity=false";
+			String ConnectionURL = "jdbc:sqlserver://DESKTOP-D01NKHU:1433;databaseName=Long_Assignment_1001;integratedSecurity=false";
 			connection = DriverManager.getConnection(ConnectionURL, User, Password);
 			System.out.println("Ket noi thanh cong");
 		} catch (ClassNotFoundException e) {
