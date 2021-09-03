@@ -82,7 +82,6 @@ public class Customer {
 		for (int i = 0; i < order.size(); i++) {
 			System.out.print("number " + order.get(i).getNumber() + " ");
 			System.out.print("date " + order.get(i).getDate() + " ");
-			System.out.print("date " + order.get(i).getDate() + " ");
 			System.out.println();
 		}
 	}
