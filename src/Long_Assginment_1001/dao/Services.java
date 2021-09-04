@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,6 +17,7 @@ import JDBC.JDBC;
 import Long_Assginment_1001.entities.Customer;
 import Long_Assginment_1001.entities.LineItem;
 import Long_Assginment_1001.entities.Order;
+import Long_Assginment_1001.entities.Product;
 import Long_Assginment_902.Validator;
 
 public class Services {
@@ -32,6 +35,31 @@ public class Services {
 				Customer cs = new Customer();
 				cs.setCustomerId(rs.getInt("customer_id"));
 				cs.setCustomerName(rs.getString("customer_name"));
+				listCus.add(cs);
+			}
+			System.out.println("DONE");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return listCus;
+	}
+	
+	public static List<Product> getAllProduct(){
+		List<Product> listCus = new ArrayList<Product>();
+		Connection cnn = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		try {
+			cnn = JDBC.getConnections();
+			String sql = "select * from product";
+			statement = cnn.prepareStatement(sql);
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				Product cs = new Product();
+				cs.setProductId(rs.getInt(1));
+				cs.setProductName(rs.getString(2));
+				cs.setListPrice(rs.getDouble(3));
 				listCus.add(cs);
 			}
 		} catch (SQLException e) {
@@ -75,6 +103,33 @@ public class Services {
 
 	}
 
+	public static List<Order> getAllOrders() {
+		List<Order> listOrder = new ArrayList<Order>();
+		Connection cnn = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		try {
+			cnn = JDBC.getConnections();
+			String sql = "select * from orders";
+			statement = cnn.prepareStatement(sql);
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				Order order = new Order();
+				order.setOrderId(rs.getInt("order_id"));
+				order.setOrderDate(LocalDate.parse(rs.getString("order_date"),DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+				order.setCustomerId(rs.getInt("customer_id"));
+				order.setEmployeeId(rs.getInt("employee_id"));
+				order.setTotal(rs.getDouble("total"));
+				listOrder.add(order);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return listOrder;
+
+	}
 	public static List<LineItem> getAllItemsByOrderId(int orderId) {
 		List<LineItem> listLine = new ArrayList<LineItem>();
 		Connection cnn = null;
@@ -124,6 +179,21 @@ public class Services {
 		}
 		return result;
 	}
+	
+	public static Customer createCustomer(Scanner sc) {
+		Customer cs = new Customer();
+		cs.setCustomerId(getID()+1);
+		System.out.println("Enter Customer name");
+		String cusName = sc.nextLine();
+		cs.setCustomerName(cusName);
+		if (addCustomer(cs)) {
+			System.out.println("Add succesfully");
+		} else{
+			System.out.println("Add failure");
+		};
+		return cs;
+	}
+	
 	
 	public static boolean addCustomer(Customer customer) {
 		Connection cnn = null;
@@ -199,7 +269,6 @@ public class Services {
 				return false;
 			} 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;
@@ -207,8 +276,7 @@ public class Services {
 	
 	public static Order createOrder(Scanner sc) {
 		Order od = new Order();
-		System.out.println("Enter Order ID");
-		int orderID = Integer.parseInt(sc.nextLine());
+		int orderID = getIDOrder();
 		od.setOrderId(orderID);
 		System.out.println("Enter Order date");
 		LocalDate date = Validator.validDate(sc);
@@ -222,6 +290,7 @@ public class Services {
 		System.out.println("Enter total");
 		double total = Double.parseDouble(sc.nextLine());
 		od.setTotal(total);
+		addOrder(od);
 		return od;
 	}
 	
@@ -245,7 +314,6 @@ public class Services {
 				return false;
 			} 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;
@@ -253,21 +321,48 @@ public class Services {
 	
 	public static LineItem createLineItem(Scanner sc) {
 		LineItem lt = new LineItem();
+		int orderID = 0;
+		do {
 		System.out.println("Enter Order ID");
-		int orderID = Integer.parseInt(sc.nextLine());
+		 orderID = Integer.parseInt(sc.nextLine());
+		} while (!checkContainOrderID(orderID));
 		lt.setOrderId(orderID);
+		int productID = 0;
+		do {
 		System.out.println("Enter product ID");
-		int productID = Integer.parseInt(sc.nextLine());
+		productID = Integer.parseInt(sc.nextLine());
+		} while (!checkContainProductID(productID));
 		lt.setProductId(productID);
 		System.out.println("Enter quantity");
-		int quantity = Integer.parseInt(sc.nextLine());
+		int quantity = Validator.validateNumber();
 		lt.setQuantity(quantity);
 		System.out.println("Enter price");
 		double price = Double.parseDouble(sc.nextLine());
 		lt.setPrice(price);
+		addLineItem(lt);
 		return lt;
 	}
 	
+	private static boolean checkContainProductID(int productID) {
+		List<Product> listProduct = getAllProduct();
+		for (Product product : listProduct) {
+			if (product.getProductId() == productID) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean checkContainOrderID(int orderID) {
+		List<Order> listOrder = getAllOrders();
+		for (Order order : listOrder) {
+			if (order.getOrderId() == orderID) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static boolean addLineItem(LineItem item) {
 		Connection cnn = null;
 		PreparedStatement statement = null;
@@ -292,6 +387,8 @@ public class Services {
 		}
 		return false;
 	}
+	
+	
 	
 	public static Order changeOrder(Scanner sc) {
 		Order od = new Order();
@@ -330,4 +427,47 @@ public class Services {
 		return false;
 	}
 	
+	public static int getID() {
+		Connection cnn = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		int id = 0;
+		try {
+			cnn = JDBC.getConnections();
+			String sql = "select * from customer";
+			statement = cnn.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			rs = statement.executeQuery();
+			if (rs.last()) {
+				id = rs.getInt(1);
+				return id;
+			} 
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return id;
+	}
+	
+	public static int getIDOrder() {
+		Connection cnn = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		int id = 0;
+		try {
+			cnn = JDBC.getConnections();
+			String sql = "select * from orders";
+			statement = cnn.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			rs = statement.executeQuery();
+			if (rs.last()) {
+				id = rs.getInt(1);
+				return id;
+			} 
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return id;
+	}
 }
