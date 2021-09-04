@@ -6,8 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import JDBC.JDBC;
 import Long_Assginment_1001.entities.Customer;
@@ -139,6 +141,188 @@ public class Services {
 			} else {
 				return false;
 			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	public static boolean deleteCustomer(int customerId) {
+		Connection cnn = null;
+		CallableStatement cab = null;
+		int count = 0;
+		try {
+			cnn = JDBC.getConnections();
+			String sql = "{Call deletecustomer(?,?)}";
+			cab = cnn.prepareCall(sql);
+			cab.setInt(1, customerId);
+			cab.registerOutParameter(2, java.sql.Types.INTEGER);
+			cab.executeUpdate();
+			count = cab.getInt(2);
+			if (count >0) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;	
+	}
+	
+	public static Customer changeCustomer(Scanner sc) {
+		Customer cs = new Customer();
+		System.out.println("Enter Customer ID want to change");
+		int cusID = Integer.parseInt(sc.nextLine());
+		System.out.println("Enter Customer name");
+		String cusName = sc.nextLine();
+		cs.setCustomerId(cusID);
+		cs.setCustomerName(cusName);
+		return cs;
+	}
+	
+	public static boolean updateCustomer(Customer customer) {
+		Connection cnn = null;
+		CallableStatement cab = null;
+		int count =0;
+		try {
+			cnn = JDBC.getConnections();
+			String sql = "{Call updatecustomer(?,?)}";
+			cab = cnn.prepareCall(sql);
+			cab.setInt(1, customer.getCustomerId());
+			cab.setString(2, customer.getCustomerName());
+			count = cab.executeUpdate();
+			if (count >0) {
+				return true;
+			} else {
+				return false;
+			} 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static Order createOrder(Scanner sc) {
+		Order od = new Order();
+		System.out.println("Enter Order ID");
+		int orderID = Integer.parseInt(sc.nextLine());
+		od.setOrderId(orderID);
+		System.out.println("Enter Order date");
+		LocalDate date = Validator.validDate(sc);
+		od.setOrderDate(date);
+		System.out.println("Customer ID");
+		int CusID = Integer.parseInt(sc.nextLine());
+		od.setCustomerId(CusID);
+		System.out.println("Employee ID");
+		int empID = Integer.parseInt(sc.nextLine());
+		od.setEmployeeId(empID);
+		System.out.println("Enter total");
+		double total = Double.parseDouble(sc.nextLine());
+		od.setTotal(total);
+		return od;
+	}
+	
+	public static boolean addOrder(Order order) {
+		Connection cnn = null;
+		PreparedStatement statement = null;
+		int count =0;
+		try {
+			cnn = JDBC.getConnections();
+			String sql = "insert into orders values(?,?,?,?,?)";
+			statement = cnn.prepareStatement(sql);
+			statement.setInt(1, order.getOrderId());
+			statement.setDate(2,java.sql.Date.valueOf(order.getOrderDate()) );
+			statement.setInt(3, order.getCustomerId());
+			statement.setInt(4, order.getEmployeeId());
+			statement.setDouble(5, order.getTotal());
+			count = statement.executeUpdate();
+			if (count >0) {
+				return true;
+			} else {
+				return false;
+			} 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static LineItem createLineItem(Scanner sc) {
+		LineItem lt = new LineItem();
+		System.out.println("Enter Order ID");
+		int orderID = Integer.parseInt(sc.nextLine());
+		lt.setOrderId(orderID);
+		System.out.println("Enter product ID");
+		int productID = Integer.parseInt(sc.nextLine());
+		lt.setProductId(productID);
+		System.out.println("Enter quantity");
+		int quantity = Integer.parseInt(sc.nextLine());
+		lt.setQuantity(quantity);
+		System.out.println("Enter price");
+		double price = Double.parseDouble(sc.nextLine());
+		lt.setPrice(price);
+		return lt;
+	}
+	
+	public static boolean addLineItem(LineItem item) {
+		Connection cnn = null;
+		PreparedStatement statement = null;
+		int count =0;
+		try {
+			cnn = JDBC.getConnections();
+			String sql = "insert into lineitem values(?,?,?,?)";
+			statement = cnn.prepareStatement(sql);
+			statement.setInt(1, item.getOrderId());
+			statement.setInt(2, item.getProductId());
+			statement.setInt(3, item.getQuantity());
+			statement.setDouble(4, item.getPrice());
+			count = statement.executeUpdate();
+			if (count >0) {
+				return true;
+			} else {
+				return false;
+			} 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static Order changeOrder(Scanner sc) {
+		Order od = new Order();
+		System.out.println("Enter Order ID want to change");
+		int orderID = Integer.parseInt(sc.nextLine());
+		od.setOrderId(orderID);
+		System.out.println("Enter Order total want to update ");
+		double total = Double.parseDouble(sc.nextLine());
+		od.setTotal(total);
+		return od;
+	}
+	
+	public static boolean updateOrderTotal(int orderId) {
+		Scanner sc = new Scanner(System.in);
+		Connection cnn = null;
+		PreparedStatement statement = null;
+		int count = 0;
+		try {
+			cnn = JDBC.getConnections();
+			System.out.println("Enter total want to update");
+			double total = Double.parseDouble(sc.nextLine());
+			String sql = "update orders set total = ? where order_id = ?";
+			statement = cnn.prepareStatement(sql);
+			statement.setInt(2, orderId);
+			statement.setDouble(1, total);
+			count = statement.executeUpdate();
+			if (count >0) {
+				return true;
+			} else {
+				return false;
+			} 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
