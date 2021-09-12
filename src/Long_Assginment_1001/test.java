@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import JDBC.JDBC;
+import General_Assignment.Services.JDBC;
 
 public class test {
 	public static void main(String[] args) {

@@ -13,7 +13,7 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Scanner;
 
-import JDBC.JDBC;
+import General_Assignment.Services.JDBC;
 import Long_Assginment_1001.entities.Customer;
 import Long_Assginment_1001.entities.LineItem;
 import Long_Assginment_1001.entities.Order;
