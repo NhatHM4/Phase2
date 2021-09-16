@@ -78,10 +78,10 @@ public class ManagerCandidate {
 		String line1 = "";
 		String line2 = "";
 		String line3 = "";
-		BufferedReader bff1 = new BufferedReader(new FileReader("E:\\hoc lap trinh\\Phase 2\\JPE\\Experience.txt"));
+		BufferedReader bff1 = new BufferedReader(new FileReader("E:\\hoc lap trinh\\Phase 2\\JPE\\Experience.csv"));
 		while ((line1 = bff1.readLine()) != null) {
 			Experience exp = new Experience();
-			String[] data1 = line1.split(" ");
+			String[] data1 = line1.split(",");
 			exp.setCandidateID(data1[0]);
 			exp.setFullName(data1[1]);
 			exp.setBirthDay(data1[2]);
@@ -93,10 +93,10 @@ public class ManagerCandidate {
 			exp.setCertificatedDate(getLisCer(data1[0]));
 			listCandidate.add(exp);
 		}
-		BufferedReader bff2 = new BufferedReader(new FileReader("E:\\hoc lap trinh\\Phase 2\\JPE\\Fresher.txt"));
+		BufferedReader bff2 = new BufferedReader(new FileReader("E:\\hoc lap trinh\\Phase 2\\JPE\\Fresher.csv"));
 		while ((line2 = bff2.readLine()) != null) {
 			Fresher fr = new Fresher();
-			String[] data1 = line2.split(" ");
+			String[] data1 = line2.split(",");
 			fr.setCandidateID(data1[0]);
 			fr.setFullName(data1[1]);
 			fr.setBirthDay(data1[2]);
@@ -109,10 +109,10 @@ public class ManagerCandidate {
 			fr.setCertificatedDate(getLisCer(data1[0]));
 			listCandidate.add(fr);
 		}
-		BufferedReader bff3 = new BufferedReader(new FileReader("E:\\hoc lap trinh\\Phase 2\\JPE\\Intern.txt"));
+		BufferedReader bff3 = new BufferedReader(new FileReader("E:\\hoc lap trinh\\Phase 2\\JPE\\Intern.csv"));
 		while ((line3 = bff3.readLine()) != null) {
 			Intern in = new Intern();
-			String[] data1 = line3.split(" ");
+			String[] data1 = line3.split(",");
 			in.setCandidateID(data1[0]);
 			in.setFullName(data1[1]);
 			in.setBirthDay(data1[2]);
@@ -134,10 +134,10 @@ public class ManagerCandidate {
 	private static ArrayList<Certificated> getLisCer(String string) throws IOException {
 		ArrayList<Certificated> listCer = new ArrayList<Certificated>();
 		String line1 = "";
-		BufferedReader bff1 = new BufferedReader(new FileReader("E:\\hoc lap trinh\\Phase 2\\JPE\\Certificate.txt"));
+		BufferedReader bff1 = new BufferedReader(new FileReader("E:\\hoc lap trinh\\Phase 2\\JPE\\Certificate.csv"));
 		while ((line1 = bff1.readLine()) != null) {
 			Certificated ctf = new Certificated();
-			String[] data1 = line1.split(" ");
+			String[] data1 = line1.split(",");
 			if (data1[4].equals(string)) {
 				ctf.setCertificatedID(data1[0]);
 				ctf.setCertificateName(data1[1]);
@@ -150,10 +150,10 @@ public class ManagerCandidate {
 	}
 
 	private static void saveToFile(List<Candidate> listCandidate) throws IOException {
-		File file1 = new File("E:\\hoc lap trinh\\Phase 2\\JPE\\Experience.txt");
-		File file2 = new File("E:\\hoc lap trinh\\Phase 2\\JPE\\Fresher.txt");
-		File file3 = new File("E:\\hoc lap trinh\\Phase 2\\JPE\\Intern.txt");
-		File file4 = new File("E:\\hoc lap trinh\\Phase 2\\JPE\\Certificate.txt");
+		File file1 = new File("E:\\hoc lap trinh\\Phase 2\\JPE\\Experience.csv");
+		File file2 = new File("E:\\hoc lap trinh\\Phase 2\\JPE\\Fresher.csv");
+		File file3 = new File("E:\\hoc lap trinh\\Phase 2\\JPE\\Intern.csv");
+		File file4 = new File("E:\\hoc lap trinh\\Phase 2\\JPE\\Certificate.csv");
 		OutputStream outputStream1 = null;
 		OutputStream outputStream2 = null;
 		OutputStream outputStream3 = null;
@@ -173,58 +173,58 @@ public class ManagerCandidate {
 			outputStreamWriter4 = new OutputStreamWriter(outputStream4);
 			for (Candidate candidate : listCandidate) {
 				if (candidate instanceof Experience) {
-					outputStreamWriter1.write(candidate.getCandidateID() + " ");
-					outputStreamWriter1.write(candidate.getFullName() + " ");
-					outputStreamWriter1.write(candidate.getBirthDay() + " ");
-					outputStreamWriter1.write(candidate.getPhone() + " ");
-					outputStreamWriter1.write(candidate.getEmail() + " ");
-					outputStreamWriter1.write(candidate.getCandidate_type() + " ");
-					outputStreamWriter1.write(((Experience)candidate).getExpInYear() + " ");
-					outputStreamWriter1.write(((Experience)candidate).getProSkill() + " ");
+					outputStreamWriter1.write(candidate.getCandidateID() + ",");
+					outputStreamWriter1.write(candidate.getFullName() + ",");
+					outputStreamWriter1.write(candidate.getBirthDay() + ",");
+					outputStreamWriter1.write(candidate.getPhone() + ",");
+					outputStreamWriter1.write(candidate.getEmail() + ",");
+					outputStreamWriter1.write(candidate.getCandidate_type() + ",");
+					outputStreamWriter1.write(((Experience)candidate).getExpInYear() + ",");
+					outputStreamWriter1.write(((Experience)candidate).getProSkill() + ",");
 					for (Certificated cer : candidate.getCertificatedDate()) {
-						outputStreamWriter4.write(cer.getCertificatedID() + " ");
-						outputStreamWriter4.write(cer.getCertificateName() + " ");
-						outputStreamWriter4.write(cer.getCertificateRank() + " ");
-						outputStreamWriter4.write(cer.getCertificatedDate() + " ");
-						outputStreamWriter4.write(candidate.getCandidateID() + " ");
+						outputStreamWriter4.write(cer.getCertificatedID() + ",");
+						outputStreamWriter4.write(cer.getCertificateName() + ",");
+						outputStreamWriter4.write(cer.getCertificateRank() + ",");
+						outputStreamWriter4.write(cer.getCertificatedDate() + ",");
+						outputStreamWriter4.write(candidate.getCandidateID() + ",");
 						outputStreamWriter4.write("\n");
 					}
 					outputStreamWriter1.write("\n");
 				} else if (candidate instanceof Fresher) {
-					outputStreamWriter2.write(candidate.getCandidateID() + " ");
-					outputStreamWriter2.write(candidate.getFullName() + " ");
-					outputStreamWriter2.write(candidate.getBirthDay() + " ");
-					outputStreamWriter2.write(candidate.getPhone() + " ");
-					outputStreamWriter2.write(candidate.getEmail() + " ");
-					outputStreamWriter2.write(candidate.getCandidate_type() + " ");
-					outputStreamWriter2.write(((Fresher)candidate).getGraduation_date() + " ");
-					outputStreamWriter2.write(((Fresher)candidate).getGraduation_rank() + " ");
-					outputStreamWriter2.write(((Fresher)candidate).getEducation() + " ");
+					outputStreamWriter2.write(candidate.getCandidateID() + ",");
+					outputStreamWriter2.write(candidate.getFullName() + ",");
+					outputStreamWriter2.write(candidate.getBirthDay() + ",");
+					outputStreamWriter2.write(candidate.getPhone() + ",");
+					outputStreamWriter2.write(candidate.getEmail() + ",");
+					outputStreamWriter2.write(candidate.getCandidate_type() + ",");
+					outputStreamWriter2.write(((Fresher)candidate).getGraduation_date() + ",");
+					outputStreamWriter2.write(((Fresher)candidate).getGraduation_rank() + ",");
+					outputStreamWriter2.write(((Fresher)candidate).getEducation() + ",");
 					for (Certificated cer : candidate.getCertificatedDate()) {
-						outputStreamWriter4.write(cer.getCertificatedID() + " ");
-						outputStreamWriter4.write(cer.getCertificateName() + " ");
-						outputStreamWriter4.write(cer.getCertificateRank() + " ");
-						outputStreamWriter4.write(cer.getCertificatedDate() + " ");
-						outputStreamWriter4.write(candidate.getCandidateID() + " ");
+						outputStreamWriter4.write(cer.getCertificatedID() + ",");
+						outputStreamWriter4.write(cer.getCertificateName() + ",");
+						outputStreamWriter4.write(cer.getCertificateRank() + ",");
+						outputStreamWriter4.write(cer.getCertificatedDate() + ",");
+						outputStreamWriter4.write(candidate.getCandidateID() + ",");
 						outputStreamWriter4.write("\n");
 					}
 					outputStreamWriter2.write("\n");
 				} else {
-					outputStreamWriter3.write(candidate.getCandidateID() + " ");
-					outputStreamWriter3.write(candidate.getFullName() + " ");
-					outputStreamWriter3.write(candidate.getBirthDay() + " ");
-					outputStreamWriter3.write(candidate.getPhone() + " ");
-					outputStreamWriter3.write(candidate.getEmail() + " ");
-					outputStreamWriter3.write(candidate.getCandidate_type() + " ");
-					outputStreamWriter3.write(((Intern)candidate).getMajors() + " ");
-					outputStreamWriter3.write(((Intern)candidate).getSemester() + " ");
-					outputStreamWriter3.write(((Intern)candidate).getUniversity_name() + " ");
+					outputStreamWriter3.write(candidate.getCandidateID() + ",");
+					outputStreamWriter3.write(candidate.getFullName() + ",");
+					outputStreamWriter3.write(candidate.getBirthDay() + ",");
+					outputStreamWriter3.write(candidate.getPhone() + ",");
+					outputStreamWriter3.write(candidate.getEmail() + ",");
+					outputStreamWriter3.write(candidate.getCandidate_type() + ",");
+					outputStreamWriter3.write(((Intern)candidate).getMajors() + ",");
+					outputStreamWriter3.write(((Intern)candidate).getSemester() + ",");
+					outputStreamWriter3.write(((Intern)candidate).getUniversity_name() + ",");
 					for (Certificated cer : candidate.getCertificatedDate()) {
-						outputStreamWriter4.write(cer.getCertificatedID() + " ");
-						outputStreamWriter4.write(cer.getCertificateName() + " ");
-						outputStreamWriter4.write(cer.getCertificateRank() + " ");
-						outputStreamWriter4.write(cer.getCertificatedDate() + " ");
-						outputStreamWriter4.write(candidate.getCandidateID() + " ");
+						outputStreamWriter4.write(cer.getCertificatedID() + ",");
+						outputStreamWriter4.write(cer.getCertificateName() + ",");
+						outputStreamWriter4.write(cer.getCertificateRank() + ",");
+						outputStreamWriter4.write(cer.getCertificatedDate() + ",");
+						outputStreamWriter4.write(candidate.getCandidateID() + ",");
 						outputStreamWriter4.write("\n");
 					}
 					outputStreamWriter3.write("\n");
